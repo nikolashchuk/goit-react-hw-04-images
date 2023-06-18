@@ -8,6 +8,12 @@ export default function Modal({
   onClose,
 }) {
   useEffect(() => {
+    const handleEsc = event => {
+      if (event.code === 'Escape') {
+        onClose();
+      }
+    };
+
     window.addEventListener('keydown', handleEsc);
 
     return () => {
@@ -17,12 +23,6 @@ export default function Modal({
 
   const handleBackdrop = event => {
     if (event.target === event.currentTarget) {
-      onClose();
-    }
-  };
-
-  const handleEsc = event => {
-    if (event.code === 'Escape') {
       onClose();
     }
   };
