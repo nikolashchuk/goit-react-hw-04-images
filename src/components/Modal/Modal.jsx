@@ -1,42 +1,42 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Backdrop, ModalWindow } from './Modal.styled';
 
-export default class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleEsc);
-  }
+export default function Modal({
+  currentImageUrl,
+  currentImageDescription,
+  onClose,
+}) {
+  useEffect(() => {
+    window.addEventListener('keydown', handleEsc);
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleEsc);
-  }
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, [onClose]);
 
-  handleBackdrop = event => {
+  const handleBackdrop = event => {
     if (event.target === event.currentTarget) {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  handleEsc = event => {
+  const handleEsc = event => {
     if (event.code === 'Escape') {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    const { currentImageUrl, currentImageDescription } = this.props;
-
-    return createPortal(
-      <Backdrop onClick={this.handleBackdrop}>
-        <ModalWindow>
-          <img
-            src={currentImageUrl}
-            alt={currentImageDescription}
-            loading="lazy"
-          />
-        </ModalWindow>
-      </Backdrop>,
-      document.querySelector('#modal-root')
-    );
-  }
+  return createPortal(
+    <Backdrop onClick={handleBackdrop}>
+      <ModalWindow>
+        <img
+          src={currentImageUrl}
+          alt={currentImageDescription}
+          loading="lazy"
+        />
+      </ModalWindow>
+    </Backdrop>,
+    document.querySelector('#modal-root')
+  );
 }
